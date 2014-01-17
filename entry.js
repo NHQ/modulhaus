@@ -4,15 +4,15 @@ var fs = require('fullscreen');
 var touchdown = require('touchdown');
 var Time = require('../since-when')
 var ndarray = require('ndarray')
-var rol = require('./lib/rol.js')
+var rules = require('./lib/rules.js')
 require('./lib/reqFrame')()
 var getCSS = require('./lib/getCSS')
 
-var time = Time()
+//var time = Time()
 var w = window.innerWidth
 var h = window.innerHeight
 var draw = ui.board.getContext('2d')
-var lifeSize = 20;
+var lifeSize = 25 
 var zoom = 1;
 ui.board.width = w
 ui.board.height = h
@@ -37,18 +37,38 @@ function draw(t){
   
 }
 
-time.every(1e9, function(tock, interva){
-  
-})
-
+var anim = 0;
 touchdown.start(ui.board);
 touchdown.start(ui.step)
+touchdown.start(ui.play)
+touchdown.start(ui.stop)
 
-ui.step.addEventListener('click', function(evt){
-
-  rule(bits, next)
-
+ui.stop.addEventListener('touchdown', function(){
+  window.cancelAnimationFrame(anim)
 })
+ui.play.addEventListener('touchdown', function(){
+  play()
+})
+ui.step.addEventListener('click', run)
+
+function play(){
+  anim = window.requestAnimationFrame(play)
+  run()
+}
+function run(evt){
+  
+  rules(bits, next)
+  for(var i = 0; i < next.shape[0]; i++){
+    for(var j = 0; j < next.shape[1]; j++){
+      var n = next.get(i, j)
+      gen(i * lifeSize, j * lifeSize, n - 10)
+    }
+  }
+  var z = bits
+  bits = next
+  next = z
+
+}
 
 draw.strokeStyle = '#fff';
 for(var x = 0; x < w; x+=lifeSize * zoom){
@@ -64,34 +84,6 @@ draw.stroke()
 
 ui.board.addEventListener('touchdown', springLife)
 //ui.board.addEventListener('deltavector', springLife)
-
-function rule(prev, next){
-  var nx = prev.shape[0];
-  var ny = prev.shape[1];
-
-  for(var i=1;i<nx-1;i++){
-    for(var j=1; j<ny-1; j++){
-      var n = 0;
-      for(var dx=-1; dx<=1; ++dx){
-        for(var dy=-1; dy<=1; ++dy) {
-          if(dx === 0 && dy === 0) {
-            continue
-          }
-          n += prev.get(i+dx, j+dy)
-        }
-        if(n === 3 || n === 3 + prev.get(i, j)){
-          next.set(i,j, 10 + n)
-        }
-        else {
-          next.set(i,j, n)
-        }
-        gen(i * lifeSize,j * lifeSize, n > 9 ? 1 : 0)
-      }
-    }
-  }
-}
-
-
 function gen(x, y, z){
   x -= x % lifeSize
   y -= y % lifeSize
@@ -106,21 +98,13 @@ function springLife(e){
   y -= y % lifeSize
   x /= lifeSize
   y /= lifeSize
-  var s = bits.get(x, y)
-  if(s < 1) s = 1
-  else s = 0
-  bits.set(x, y, s)
-  gen(e.detail.x, e.detail.y, s)
+  var z = bits.get(x, y)
+  if(z < 10) z = 10
+  else z = 0
+  bits.set(x, y, z)
+  gen(e.detail.x, e.detail.y, z)
 }
-function springxLife(e){
-  bits.set(e.detail.x, e.detail.y, 1)
-  pixel = draw.getImageData(e.detail.x - (e.detail.x % lifeSize), e.detail.y - (e.detail.y % lifeSize), lifeSize, lifeSize)
-  for(var x = 0; x < pixel.data.length; x++){
-    pixel.data[x] = 255
-  }
-  draw.putImageData(pixel, e.detail.x - (e.detail.x % lifeSize), e.detail.y - (e.detail.y % lifeSize))
-  console.log(e, e.detail.x, e.detail.y)
-}
+
 var screen = fs(document.body);
 
 screen.on('attain', function(){
@@ -129,7 +113,7 @@ screen.on('attain', function(){
 screen.on('error', function(e){console.log(e)})
 
 document.body.addEventListener('click', function(){
-  screen.request()
+//  screen.request()
 })
 
 function rgba(){
