@@ -2,12 +2,13 @@ var body = document.body
 var ui = require('getids')(document.body)
 var fs = require('fullscreen');
 var touchdown = require('touchdown');
-var Time = require('../since-when')
+var Time = require('since-when')
 var ndarray = require('ndarray')
 var rules = require('./lib/rules.js')
 require('./lib/reqFrame')()
 var getCSS = require('./lib/getCSS')
 var drawGrid = require('./lib/grid.js')
+var squarejob = require('./lib/squarejob');
 var w,h,draw,lifeSize,zom,data,data2;
 
 init()
@@ -37,12 +38,13 @@ var next = ndarray(data2, [Math.ceil(w / lifeSize), Math.ceil(h / lifeSize)]);
 
 window.addEventListener('resize', function(evt){
   init()
-  for(var i = 0; i < next.shape[0]; i++){
-    for(var j = 0; j < next.shape[1]; j++){
-      var n = prev.get(i, j)
-      gen(i * lifeSize, j * lifeSize, n - 10)
-    }
-  }
+  squarejob(prev, draw, lifeSize)
+//  for(var i = 0; i < next.shape[0]; i++){
+//    for(var j = 0; j < next.shape[1]; j++){
+//      var n = prev.get(i, j)
+//      gen(i * lifeSize, j * lifeSize, n - 10)
+//    }
+//  }
 }, false)
 
   var pixel = draw.getImageData(0,0,100,100)
