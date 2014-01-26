@@ -1,3 +1,4 @@
+var domready = require('domready')
 var body = document.body
 var ui = require('getids')(document.body)
 var fs = require('fullscreen');
@@ -9,126 +10,107 @@ require('./lib/reqFrame')()
 var getCSS = require('./lib/getCSS')
 var drawGrid = require('./lib/grid.js')
 var squarejob = require('./lib/squarejob');
-var w,h,draw,lifeSize,zom,data,data2;
+var w,h,draw,lifeSize,zom,data,data2, prev, next;
+var anim = 0;
+var Time = require('since-when')
+var time = Time()
+var mix = require('color-mix');
+var pxecho = require('../pxecho/index.js');
 
-init()
-
+setTimeout(init, 111)
+//setTimeout(init, 223)
+//setTimeout(init, 333)
+//setTimeout(init, 444) //init()
+//setTimeout(init, 555)
 function init(){
   w = window.innerWidth
   h = window.innerHeight
+  lifeSize = 11 
+  var delay = pxecho(w * h * 4, Uint8ClampedArray)
+
+
+  data = new Uint8ClampedArray(Math.ceil(w / lifeSize) * Math.ceil(h / lifeSize))
+  data2 = new Uint8ClampedArray(Math.ceil(w / lifeSize) * Math.ceil(h / lifeSize))
+
+  for(var x = 0; x < data.length; x++){
+    data[x] = 0//Math.floor(Math.random() * 9);
+    data2[x] = 0//Math.floor(Math.random() * 9)
+  }
+
+  prev = ndarray(data, [Math.ceil(w / lifeSize), Math.ceil(h / lifeSize)]);
+  next = ndarray(data2, [Math.ceil(w / lifeSize), Math.ceil(h / lifeSize)]);
   draw = ui.board.getContext('2d')
-  lifeSize = 25 
   zoom = 1;
   ui.board.width = w
   ui.board.height = h
-  drawGrid(draw, w, h, 25)
-}
-
-
-data = new Uint8ClampedArray(Math.ceil(w / lifeSize) * Math.ceil(h / lifeSize))
-data2 = new Uint8ClampedArray(Math.ceil(w / lifeSize) * Math.ceil(h / lifeSize))
-
-for(var x = 0; x < data.length; x++){
-  data[x] = 0;
-  data2[x] = 0
-}
-
-var prev = ndarray(data, [Math.ceil(w / lifeSize), Math.ceil(h / lifeSize)]);
-var next = ndarray(data2, [Math.ceil(w / lifeSize), Math.ceil(h / lifeSize)]);
-
-window.addEventListener('resize', function(evt){
-  init()
-  squarejob(prev, draw, lifeSize)
-//  for(var i = 0; i < next.shape[0]; i++){
-//    for(var j = 0; j < next.shape[1]; j++){
-//      var n = prev.get(i, j)
-//      gen(i * lifeSize, j * lifeSize, n - 10)
-//    }
-//  }
-}, false)
-
-  var pixel = draw.getImageData(0,0,100,100)
-  function draw(t){
-
-    window.requestAnimationFrame(draw)
-  
-  }
-
-  var anim = 0;
-  touchdown.start(ui.board);
-  touchdown.start(ui.step)
-  touchdown.start(ui.play)
-  touchdown.start(ui.stop)
-
-ui.stop.addEventListener('touchdown', function(){
-  window.cancelAnimationFrame(anim)
-})
-ui.play.addEventListener('touchdown', function(){
+//  time.every(1e9 * .63,run)
   play()
-})
-ui.step.addEventListener('click', run)
+  var ad = prev.shape
+  console.log(ad)
+  prev.set(Math.floor(ad[0]/2),Math.floor(ad[1]/2),245)
+  prev.set(Math.floor(w / lifeSize), 0, 55)
+//  play()
+//  squarejob(prev, draw, lifeSize)
 
-module.exports = {
-  play: play,
-  stop: stop,
-  step: step
-}
-
+//  drawGrid(draw, w, h, 25)
 function stop(){
   window.cancelAnimationFrame(anim)
 }
 function play(){
   anim = window.requestAnimationFrame(play)
+  
   run()
 }
-function run(evt){
-  
-  rules(prev, next)
-  for(var i = 0; i < next.shape[0]; i++){
-    for(var j = 0; j < next.shape[1]; j++){
-      var n = next.get(i, j)
-      gen(i * lifeSize, j * lifeSize, n - 10)
+var spin = 0;
+function run(tock, interval){
+//  prev.set(0,0,99)
+//  prev.set(Math.floor(ad[0]/2),Math.floor(ad[1]/2),245)
+//  prev.set(Math.floor(w / lifeSize), 0, 255)
+//  ui.board.style['-webkit-transform'] = 'rotate('+(spin+=6)+'deg)'
+//  ui.board.style['transform'] = 'rotate('+(spin++)+'deg)'
+
+rules(prev, next)
+  squarejob(next, draw, lifeSize)//*(Math.ceil(Math.random() * 3)))
+/*  var data = draw.getImageData(0,0,w,h)
+  var d = data.data, i = 0;
+  var color;
+  for(var x = 0, arr = [], arrb = []; x < w * h; x++){
+    i = x * 4
+    arr[0] = delay.read()
+    arr[1] = delay.read()
+    arr[2] = delay.read()
+    arr[3] = delay.read()
+    arrb[0] = d[i]
+    arrb[1] = d[i + 1]
+    arrb[2] = d[i + 2]
+    arrb[3] = d[i + 3]
+    if(arr[0]) {
+      color = mix(arr, arrb)
+//      console.log(arr, arrb, color)
+      color.forEach(function(e){delay.write(e)})
+      d[i] = color[0]
+      d[i + 1] = color[1]
+      d[i + 2] = color[2]
+      d[i + 3] = color[3]
     }
+    else arrb.forEach(function(e){delay.write(e)})
+//    console.log(arr, arrb)
+
   }
-  var z = prev
+  draw.putImageData(data, 0,0)
+*/  var z = prev
   prev = next
   next = z
+//  tock()
+}
 
 }
-ui.board.addEventListener('touchdown', springLife)
+window.addEventListener('resize', function(evt){
+  init()
+}, false)
+
+//ui.board.addEventListener('touchdown', springLife)
 //ui.board.addEventListener('deltavector', springLife)
-function gen(x, y, z){
-  x -= x % lifeSize
-  y -= y % lifeSize
-  draw.strokeStyle = (z > 0) ? rgba(0,0,0,1) : rgba(255,255,255,1)
-  draw.fillStyle = (z > 0) ? rgba(255,255,255,1) : rgba(0,0,0,1)
-  draw.fillRect(x, y, lifeSize, lifeSize)
-  draw.strokeRect(x, y, lifeSize, lifeSize)
-}
-function springLife(e){
-  var x = e.detail.x, y = e.detail.y;
-  x -= x % lifeSize
-  y -= y % lifeSize
-  x /= lifeSize
-  y /= lifeSize
-  var z = prev.get(x, y)
-  if(z < 10) z = 10
-  else z = 0
-  prev.set(x, y, z)
-  gen(e.detail.x, e.detail.y, z)
-}
-
-var screen = fs(document.body);
-
-screen.on('attain', function(){
-})
-
-screen.on('error', function(e){console.log(e)})
-
-document.body.addEventListener('click', function(){
-//  screen.request()
-})
-
 function rgba(){
   return 'rgba('+Array.prototype.join.call(arguments, ',')+')'
 }
