@@ -18,7 +18,7 @@ var mix = require('color-mix');
 var pxecho = require('../pxecho/index.js');
 var header = require('./lib/measureHeader')();
 console.log(header)
-
+var frames = [];
 setTimeout(init, 111)
 //setTimeout(init, 223)
 //setTimeout(init, 333)
@@ -27,7 +27,7 @@ setTimeout(init, 111)
 function init(){
   w = window.innerWidth
   h = window.innerHeight
-  lifeSize = 5 
+  lifeSize = 11 
   var delay = pxecho(w * h * 4, Uint8ClampedArray)
 
 
@@ -46,12 +46,15 @@ function init(){
   ui.board.width = w
   ui.board.height = h
 //  time.every(1e9 * .63,run)
-  play()
+//  play()
+
   var ad = prev.shape
   console.log(ad)
-//  prev.set(Math.floor(ad[0]/6 * 2),Math.floor(ad[1]/2),245)
+  prev.set(Math.floor(ad[0]/6 * 2),Math.floor(ad[1]/2),245)
   prev.set(Math.floor(ad[0]/6 * 4),Math.floor(ad[1]/2),245)
-  
+   record()
+  play()
+ 
 //  prev.set(Math.floor(w / lifeSize), 0, 55)
 //  play()
 //  squarejob(prev, draw, lifeSize)
@@ -62,10 +65,23 @@ function stop(){
 }
 function play(){
   anim = window.requestAnimationFrame(play)
-  
-  run()
+  squarejob(next, draw, lifeSize)
+  next.data = frames.shift() || next.data
+//  run()
 }
 var spin = 0;
+
+function record(){
+  for(var x = 0; x < 5 * 24; x ++){
+    rules(prev, next)
+    frames.push(new Uint8ClampedArray(next.data))
+    var z = prev
+    prev = next
+    next = z
+  }
+  console.log(frames)
+}
+
 function run(tock, interval){
 //  prev.set(0,0,99)
 //  prev.set(Math.floor(ad[0]/2),Math.floor(ad[1]/2),245)

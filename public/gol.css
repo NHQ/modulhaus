@@ -1,9 +1,43 @@
+body{
+  padding: 33px;
+  background-color:black;
+}
+#board{
+  border:33px solid black;
+}
+
 .title{
   z-index: 21;
   font-size:200px;
   font-family: 'Audiowide', Courier;
   font-weight:900;
   display:inline-block;  
+/*  text-shadow:20px 0 black;
+*/  letter-spacing:11px;
+  line-height:150px;
+  margin-top:21px;
+}
+.subTitle{
+  z-index:21;
+  font-size:67px;
+  font-family:'Audiowide', Courrier;
+  font-weight:900;
+  margin: 0 0 0 21px; 
+}
+.nav{
+  margin:11px 0;
+  background:transparent;
+  font-size: 47px;
+  font-weight:900;
+  font-family:'Audiowide', Courrier;
+  margin: 11px 0 11px 21px;
+}
+.nav > a{
+  color:black;
+  text-decoration:none;
+}
+.nav > a:hover{
+  color:yellow;
 }
 #m{}
 #o{}
