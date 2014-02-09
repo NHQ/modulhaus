@@ -15,10 +15,10 @@ var anim = 0;
 var Time = require('since-when')
 var time = Time()
 var mix = require('color-mix');
-var pxecho = require('../pxecho/index.js');
+//var pxecho = require('../pxecho/index.js');
 var header = require('./lib/measureHeader')();
-console.log(header)
-
+console.log(ui.header)
+ui.header.style.fontSize = header
 setTimeout(init, 111)
 //setTimeout(init, 223)
 //setTimeout(init, 333)
@@ -27,8 +27,8 @@ setTimeout(init, 111)
 function init(){
   w = window.innerWidth
   h = window.innerHeight
-  lifeSize = 5 
-  var delay = pxecho(w * h * 4, Uint8ClampedArray)
+  lifeSize =  Math.ceil(h / 9)
+//  var delay = pxecho(w * h * 4, Uint8ClampedArray)
 
 
   data = new Uint8ClampedArray(Math.ceil(w / lifeSize) * Math.ceil(h / lifeSize))
@@ -45,10 +45,10 @@ function init(){
   zoom = 1;
   ui.board.width = w
   ui.board.height = h
-//  time.every(1e9 * .63,run)
-  play()
+  time.every(1e9 / 16 , run)
+//  play()
   var ad = prev.shape
-  console.log(ad)
+//  console.log(ad)
 //  prev.set(Math.floor(ad[0]/6 * 2),Math.floor(ad[1]/2),245)
   prev.set(Math.floor(ad[0]/6 * 4),Math.floor(ad[1]/2),245)
   
@@ -60,7 +60,9 @@ function init(){
 function stop(){
   window.cancelAnimationFrame(anim)
 }
-function play(){
+var mspf = 1000 / 16
+var alast;
+function play(t){
   anim = window.requestAnimationFrame(play)
   
   run()

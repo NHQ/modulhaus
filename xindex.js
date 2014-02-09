@@ -15,9 +15,9 @@ var anim = 0;
 var Time = require('since-when')
 var time = Time()
 var mix = require('color-mix');
-var pxecho = require('../pxecho/index.js');
+//var pxecho = require('../pxecho/index.js');
 var header = require('./lib/measureHeader')();
-console.log(header)
+ui.header.style.fontSize = header
 var frames = [];
 setTimeout(init, 111)
 //setTimeout(init, 223)
@@ -28,7 +28,7 @@ function init(){
   w = window.innerWidth
   h = window.innerHeight
   lifeSize = 11 
-  var delay = pxecho(w * h * 4, Uint8ClampedArray)
+//  var delay = pxecho(w * h * 4, Uint8ClampedArray)
 
 
   data = new Uint8ClampedArray(Math.ceil(w / lifeSize) * Math.ceil(h / lifeSize))
@@ -42,6 +42,8 @@ function init(){
   prev = ndarray(data, [Math.ceil(w / lifeSize), Math.ceil(h / lifeSize)]);
   next = ndarray(data2, [Math.ceil(w / lifeSize), Math.ceil(h / lifeSize)]);
   draw = ui.board.getContext('2d')
+  
+  draw.strokeStyle = rgba(255,255,255,1) 
   zoom = 1;
   ui.board.width = w
   ui.board.height = h
@@ -49,11 +51,11 @@ function init(){
 //  play()
 
   var ad = prev.shape
-  console.log(ad)
-  prev.set(Math.floor(ad[0]/6 * 2),Math.floor(ad[1]/2),245)
-  prev.set(Math.floor(ad[0]/6 * 4),Math.floor(ad[1]/2),245)
-   record()
-  play()
+//  prev.set(Math.floor(ad[0]/6 * 2),Math.floor(ad[1]/6 * 4),245)
+  prev.set(Math.floor(ad[0]/6 * 3),Math.floor(ad[1]/6*2),245)
+//   record()
+//  time.every(1e9 / 16, run)
+//  play()
  
 //  prev.set(Math.floor(w / lifeSize), 0, 55)
 //  play()
@@ -63,23 +65,41 @@ function init(){
 function stop(){
   window.cancelAnimationFrame(anim)
 }
-function play(){
+var last = 0;
+function play(t){
   anim = window.requestAnimationFrame(play)
-  squarejob(next, draw, lifeSize)
-  next.data = frames.shift() || next.data
+  if(false || t - last < 1000 / 24) return
+  else{
+    last = t
+    squarejob(next, draw, lifeSize)
+     next.data = frames.shift() || (function(){ stop(); return next.data})()
+  }
 //  run()
 }
 var spin = 0;
 
 function record(){
-  for(var x = 0; x < 5 * 24; x ++){
+  var first = prev
+  var second = next
+  for(var x = 0; x < 12 * 24; x ++){
     rules(prev, next)
     frames.push(new Uint8ClampedArray(next.data))
     var z = prev
     prev = next
     next = z
   }
-  console.log(frames)
+
+  data = new Uint8ClampedArray(Math.ceil(w / lifeSize) * Math.ceil(h / lifeSize))
+  data2 = new Uint8ClampedArray(Math.ceil(w / lifeSize) * Math.ceil(h / lifeSize))
+
+  for(var x = 0; x < data.length; x++){
+    data[x] = 0//Math.floor(Math.random() * 9);
+    data2[x] = 0//Math.floor(Math.random() * 9)
+  }
+
+  prev = ndarray(data, [Math.ceil(w / lifeSize), Math.ceil(h / lifeSize)]);
+  next = ndarray(data2, [Math.ceil(w / lifeSize), Math.ceil(h / lifeSize)]);
+
 }
 
 function run(tock, interval){
