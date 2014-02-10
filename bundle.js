@@ -440,7 +440,7 @@ setTimeout(init, 111)
 function init(){
   w = window.innerWidth
   h = window.innerHeight
-  lifeSize = 11 
+  lifeSize = 5 
 //  var delay = pxecho(w * h * 4, Uint8ClampedArray)
 
 
@@ -466,9 +466,9 @@ function init(){
   var ad = prev.shape
 //  prev.set(Math.floor(ad[0]/6 * 2),Math.floor(ad[1]/6 * 4),245)
   prev.set(Math.floor(ad[0]/6 * 3),Math.floor(ad[1]/6*2),245)
-//   record()
+   record()
 //  time.every(1e9 / 16, run)
-//  play()
+  play()
  
 //  prev.set(Math.floor(w / lifeSize), 0, 55)
 //  play()

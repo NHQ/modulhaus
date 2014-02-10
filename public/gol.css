@@ -17,9 +17,9 @@ body{
   line-height:150px;
   margin-top:21px;
   margin: 21px auto;
-  -webkit-text-stroke: 11px hsla(90, 100%, 47%, 1);
+  -webkit-text-stroke: 11px hsla(111, 90%, 37%, 1);
   color: transparent;
-  -webkit-text-fill-color:hsla(270, 100%, 47%, 1);
+  -webkit-text-fill-color:hsla(270, 100%, 47%, 0);
 }
 .subTitle{
   text-align:center;
@@ -28,9 +28,9 @@ body{
   font-family:'Audiowide', Courrier;
   font-weight:900;
   margin: 0 auto 21px; 
- -webkit-text-stroke: 2px hsla(90, 100%, 47%, 1);
+ -webkit-text-stroke: 2px hsla(121, 100%, 0%, 1);
   color: transparent;
-  -webkit-text-fill-color:transparent;
+  -webkit-text-fill-color:hsla(121, 100%, 47%, 1);
 
 }
 .nav{
@@ -41,9 +41,9 @@ body{
    text-align:center;
   font-family:'Audiowide', Courrier;
   margin: 11px auto;
- -webkit-text-stroke: 2px hsla(90, 100%, 47%, 1);
+ -webkit-text-stroke: 2px hsla(121, 100%, 0%, 1);
   color: transparent;
-  -webkit-text-fill-color:transparent;
+  -webkit-text-fill-color:hsla(121, 100%, 47%, 1)
 
 }
 .nav > a{
