@@ -27,7 +27,7 @@ setTimeout(init, 111)
 function init(){
   w = window.innerWidth
   h = window.innerHeight
-  lifeSize =  Math.ceil(h / 9)
+  lifeSize =  7//Math.ceil(h / 9)
 //  var delay = pxecho(w * h * 4, Uint8ClampedArray)
 
 
@@ -53,7 +53,7 @@ function init(){
   prev.set(Math.floor(ad[0]/6 * 4),Math.floor(ad[1]/2),245)
   
 //  prev.set(Math.floor(w / lifeSize), 0, 55)
-//  play()
+  play()
 //  squarejob(prev, draw, lifeSize)
 
 //  drawGrid(draw, w, h, 25)
